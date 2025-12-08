@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthSense AI - Medical Report Analyzer</title>
+
+    <!-- Professional Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b, #020617);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.08);
+            border-radius: 20px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+            padding: 40px;
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: 700;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #cbd5f5;
+            margin-bottom: 40px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-section h2 {
+            color: #e2e8f0;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 14px;
+            background: rgba(0,0,0,0.4);
+            color: #e2e8f0;
+            border: 1px solid rgba(148,163,184,0.3);
+            resize: vertical;
+            min-height: 200px;
+            transition: 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 2px rgba(96,165,250,0.15);
+        }
+
+        .file-input-wrapper {
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px dashed rgba(148,163,184,0.4);
+            border-radius: 12px;
+            text-align: center;
+            background: rgba(255,255,255,0.03);
+            transition: 0.3s ease;
+        }
+
+        .file-input-wrapper:hover {
+            border-color: #60a5fa;
+            background: rgba(255,255,255,0.08);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-label {
+            cursor: pointer;
+            color: #93c5fd;
+            font-weight: 600;
+        }
+
+        .file-name {
+            margin-top: 10px;
+            color: #cbd5f5;
+            font-size: 14px;
+        }
+
+        .button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 15px 40px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            color: #020617;
+            border: none;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(56,189,248,0.4);
+            transition: 0.25s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 25px 50px rgba(129,140,248,0.5);
+        }
+
+        .button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            color: #cbd5f5;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid #60a5fa;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 30px;
+            border-radius: 16px;
+            display: none;
+            border: 1px solid rgba(148,163,184,0.25);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .result h3 {
+            margin-bottom: 12px;
+        }
+
+        .result.healthy {
+            border-left: 5px solid #22c55e;
+        }
+
+        .result.diabetes {
+            border-left: 5px solid #eab308;
+        }
+
+        .result.heart {
+            border-left: 5px solid #ef4444;
+        }
+
+        .result.anemia {
+            border-left: 5px solid #38bdf8;
+        }
+
+        .result-data {
+            margin-top: 15px;
+        }
+
+        .data-item {
+            padding: 10px;
+            margin: 6px 0;
+            background: rgba(0,0,0,0.35);
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .data-item .label {
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .data-item .value {
+            color: #cbd5f5;
+        }
+
+        .error {
+            background: rgba(239,68,68,0.15);
+            color: #fecaca;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            display: none;
+            border: 1px solid rgba(239,68,68,0.3);
+        }
+
+        .example {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #cbd5f5;
+            border: 1px solid rgba(148,163,184,0.2);
+        }
+
+        .example strong {
+            color: #93c5fd;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h1>🏥 HealthSense AI</h1>
+    <p class="subtitle">Smart Medical Report Analyzer & Disease Predictor</p>
+
+    <div class="input-section">
+        <h2>📝 Enter Medical Report Data</h2>
+        <textarea id="reportText" placeholder="glucose: 180
+blood_pressure: 145
+heart_rate: 85
+hemoglobin: 13.5
+cholesterol: 240
+bmi: 28.5
+age: 58"></textarea>
+
+        <div class="example">
+            <strong>Example Format:</strong><br>
+            glucose: 180<br>
+            blood_pressure: 145<br>
+            heart_rate: 85<br>
+            hemoglobin: 13.5<br>
+            cholesterol: 240<br>
+            bmi: 28.5<br>
+            age: 58
+        </div>
+
+        <div class="file-input-wrapper">
+            <label for="fileInput" class="file-label">📁 Or Upload CSV File</label>
+            <input type="file" id="fileInput" accept=".csv">
+            <div class="file-name" id="fileName"></div>
+        </div>
+    </div>
+
+    <button class="button" onclick="analyzeReport()">🚀 Analyze Report</button>
+
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <p>Analyzing your report...</p>
+    </div>
+
+    <div class="error" id="error"></div>
+
+    <div class="result" id="result">
+        <h3 id="resultTitle"></h3>
+        <p id="resultMessage"></p>
+        <div class="result-data" id="resultData"></div>
+    </div>
+
+</div>
+
+<script>
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    const fileName = e.target.files[0]?.name || '';
+    document.getElementById('fileName').textContent = fileName ? `Selected: ${fileName}` : '';
+});
+
+async function analyzeReport() {
+    const reportText = document.getElementById('reportText').value;
+    const fileInput = document.getElementById('fileInput');
+
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('error').style.display = 'none';
+
+    if (!reportText && !fileInput.files[0]) {
+        showError('⚠️ Please enter report data or upload a file');
+        return;
+    }
+
+    document.getElementById('loading').style.display = 'block';
+
+    try {
+        const formData = new FormData();
+        if (fileInput.files[0]) {
+            formData.append('file', fileInput.files[0]);
+        } else {
+            formData.append('report_text', reportText);
+        }
+
+        const response = await fetch('/analyze', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+        document.getElementById('loading').style.display = 'none';
+
+        if (!response.ok) {
+            showError(data.error || 'Analysis failed');
+            return;
+        }
+
+        showResult(data);
+
+    } catch (err) {
+        document.getElementById('loading').style.display = 'none';
+        showError('❌ Network error: ' + err.message);
+    }
+}
+
+function showResult(data) {
+    const resultDiv = document.getElementById('result');
+    const titleEl = document.getElementById('resultTitle');
+    const messageEl = document.getElementById('resultMessage');
+    const dataEl = document.getElementById('resultData');
+
+    const prediction = data.prediction.toLowerCase();
+    resultDiv.className = `result ${prediction}`;
+
+    const icons = {
+        healthy: '✅',
+        diabetes: '⚠️',
+        heart: '❤️',
+        anemia: '🧬'
+    };
+
+    titleEl.textContent = `${icons[prediction] || '📊'} Prediction: ${data.prediction}`;
+    messageEl.textContent = `🎯 Confidence: ${data.confidence}`;
+
+    const labels = {
+        glucose: 'Glucose',
+        blood_pressure: 'Blood Pressure',
+        heart_rate: 'Heart Rate',
+        hemoglobin: 'Hemoglobin',
+        cholesterol: 'Cholesterol',
+        bmi: 'BMI',
+        age: 'Age'
+    };
+
+    dataEl.innerHTML = '';
+
+    for (const [key, value] of Object.entries(data.data)) {
+        if (labels[key]) {
+            const div = document.createElement('div');
+            div.className = 'data-item';
+            div.innerHTML = `
+                <span class="label">${labels[key]}:</span>
+                <span class="value">${value}</span>
+            `;
+            dataEl.appendChild(div);
+        }
+    }
+
+    resultDiv.style.display = 'block';
+}
+
+function showError(message) {
+    const errorDiv = document.getElementById('error');
+    errorDiv.textContent = message;
+    errorDiv.style.display = 'block';
+}
+</script>
+</body>
+</html>
