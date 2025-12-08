@@ -18,7 +18,7 @@
 - [Usage](#-usage)
 - [Demo](#%EF%B8%8F-demo)
 - [Contributing](#-contributing)
-- [Credits](#-credits)
+- [Credits](#%E2%80%8D-credits)
 - [License](#-license)
 ---
 
