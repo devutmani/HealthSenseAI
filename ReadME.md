@@ -56,12 +56,12 @@ HealthSenseAI is an intelligent health diagnosis system that analyzes lab report
 
 <table align="center">
   <tr>
-    <td><img src="Asset/image1.png" width="200"/></td>
-    <td><img src="Asset/image2.png" width="200"/></td>
+    <td><img src="Asset/image1.png" width="300"/></td>
+    <td><img src="Asset/image2.png" width="300"/></td>
   </tr>
   <tr>
-    <td><img src="Asset/image3.png" width="200"/></td>
-    <td><img src="Asset/image4.png" width="200"/></td>
+    <td><img src="Asset/image3.png" width="300"/></td>
+    <td><img src="Asset/image4.png" width="300"/></td>
   </tr>
 </table>
 
@@ -122,15 +122,15 @@ HealthSenseAI/
 │   ├── synthetic_generator.py    # Training data generator
 │   ├── data_prep.py              # Data preprocessing
 │   └── utils.py                  # Utility functions
-├── templates/
-│   └── index.html                # Web interface
-├── models/                       # Trained models (generated)
-├── data/                         # Training data (generated)
-├── Asset/
+├── Asset/                        # Images for demonstration
 |   └── image1.png
 |   └── image2.png
 |   └── image3.png
 |   └── image4.png
+├── templates/
+│   └── index.html                # Web interface
+├── models/                       # Trained models (generated)
+├── data/                         # Training data (generated)
 └── requirements.txt              # Python dependencies
 ```
 
