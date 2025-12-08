@@ -56,12 +56,12 @@ HealthSenseAI is an intelligent health diagnosis system that analyzes lab report
 
 <table align="center">
   <tr>
-    <td><img src="Asset/image1.png" width="300"/></td>
-    <td><img src="Asset/image2.png" width="300"/></td>
+    <td><img src="Asset/image1.png" width="400"/></td>
+    <td><img src="Asset/image2.png" width="400"/></td>
   </tr>
   <tr>
-    <td><img src="Asset/image3.png" width="300"/></td>
-    <td><img src="Asset/image4.png" width="300"/></td>
+    <td><img src="Asset/image3.png" width="400"/></td>
+    <td><img src="Asset/image4.png" width="400"/></td>
   </tr>
 </table>
 
