@@ -127,8 +127,6 @@ HealthSenseAI/
 |   └── image2.png
 |   └── image3.png
 |   └── image4.png
-├── templates/
-│   └── index.html                # Web interface
 ├── models/                       # Trained models (generated)
 ├── data/                         # Training data (generated)
 └── requirements.txt              # Python dependencies
