@@ -9,14 +9,12 @@ import argparse
 from pathlib import Path
 import json
 
-# Define feature columns (must match app.py)
 FEATURE_COLUMNS = ['glucose', 'blood_pressure', 'heart_rate', 'hemoglobin', 
                    'cholesterol', 'bmi', 'age']
 TARGET_COLUMN = 'disease'
 
 
 def load_data(filepath):
-    """Load dataset from CSV file."""
     print(f"Loading data from {filepath}...")
     df = pd.read_csv(filepath)
     print(f"✓ Loaded {len(df)} records")
@@ -24,12 +22,8 @@ def load_data(filepath):
     return df
 
 def preprocess_data(df):
-    """
-    FIXED: Preprocess data with proper feature selection and encoding.
-    """
-    print("\nPreprocessing data...")
     
-    # Check for required columns
+    print("\nPreprocessing data...")
     missing_cols = [col for col in FEATURE_COLUMNS if col not in df.columns]
     if missing_cols:
         raise ValueError(f"Missing columns: {missing_cols}")
@@ -37,24 +31,20 @@ def preprocess_data(df):
     if TARGET_COLUMN not in df.columns:
         raise ValueError(f"Target column '{TARGET_COLUMN}' not found")
     
-    # Select only the features we need
     X = df[FEATURE_COLUMNS].copy()
     y = df[TARGET_COLUMN].copy()
     
-    # Handle missing values
     X = X.fillna(X.median())
     
     print(f"✓ Features shape: {X.shape}")
     print(f"✓ Target distribution:\n{y.value_counts()}")
     
-    # CRITICAL FIX: Encode labels properly
     label_encoder = LabelEncoder()
     y_encoded = label_encoder.fit_transform(y)
     
     print(f"✓ Label encoding: {dict(zip(label_encoder.classes_, 
                                         label_encoder.transform(label_encoder.classes_)))}")
     
-    # CRITICAL FIX: Scale features
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
     
@@ -66,19 +56,15 @@ def preprocess_data(df):
 
 
 def train_model(X_train, y_train):
-    """
-    FIXED: Train RandomForest with better hyperparameters.
-    """
+
     print("\nTraining RandomForest model...")
-    
-    # FIXED: Better hyperparameters to prevent overfitting
     model = RandomForestClassifier(
-        n_estimators=200,           # More trees for stability
-        max_depth=10,               # Prevent overfitting
-        min_samples_split=10,       # Require more samples to split
-        min_samples_leaf=5,         # Require more samples in leaves
-        max_features='sqrt',        # Use sqrt of features per tree
-        class_weight='balanced',    # CRITICAL: Handle imbalanced data
+        n_estimators=200,          
+        max_depth=10,              
+        min_samples_split=10,      
+        min_samples_leaf=5,        
+        max_features='sqrt',       
+        class_weight='balanced',   
         random_state=42,
         n_jobs=-1
     )
@@ -90,27 +76,21 @@ def train_model(X_train, y_train):
 
 
 def evaluate_model(model, X_test, y_test, label_encoder):
-    """Evaluate model performance."""
-    print("\nEvaluating model...")
     
-    # Predictions
+    print("\nEvaluating model...")
     y_pred = model.predict(X_test)
     
-    # Accuracy
     accuracy = accuracy_score(y_test, y_pred)
     print(f"✓ Accuracy: {accuracy:.4f}")
     
-    # Classification report
     target_names = label_encoder.classes_
     print("\nClassification Report:")
     print(classification_report(y_test, y_pred, target_names=target_names))
     
-    # Confusion matrix
     print("\nConfusion Matrix:")
     cm = confusion_matrix(y_test, y_pred)
     print(cm)
     
-    # Feature importance
     print("\nFeature Importance:")
     for col, importance in zip(FEATURE_COLUMNS, model.feature_importances_):
         print(f"  {col}: {importance:.4f}")
@@ -125,22 +105,18 @@ def save_artifacts(model, scaler, label_encoder, output_dir):
     
     print(f"\nSaving artifacts to {output_dir}...")
     
-    # Save model
     model_path = output_dir / 'rf_model.pkl'
     joblib.dump(model, model_path)
     print(f"✓ Model saved: {model_path}")
     
-    # CRITICAL: Save scaler
     scaler_path = output_dir / 'scaler.pkl'
     joblib.dump(scaler, scaler_path)
     print(f"✓ Scaler saved: {scaler_path}")
     
-    # CRITICAL: Save label encoder
     encoder_path = output_dir / 'label_encoder.pkl'
     joblib.dump(label_encoder, encoder_path)
     print(f"✓ Label encoder saved: {encoder_path}")
     
-    # Save metadata
     metadata = {
         'feature_columns': FEATURE_COLUMNS,
         'target_column': TARGET_COLUMN,
@@ -165,26 +141,20 @@ def main():
     
     args = parser.parse_args()
     
-    # Load data
     df = load_data(args.data)
     
-    # Preprocess
     X, y, scaler, label_encoder = preprocess_data(df)
     
-    # Split data
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=args.test_size, random_state=42, stratify=y
     )
     print(f"\n✓ Train set: {len(X_train)} samples")
     print(f"✓ Test set: {len(X_test)} samples")
     
-    # Train model
     model = train_model(X_train, y_train)
     
-    # Evaluate
     evaluate_model(model, X_test, y_test, label_encoder)
     
-    # Save artifacts
     save_artifacts(model, scaler, label_encoder, args.out)
     
     print("\n✓ Training complete!")
